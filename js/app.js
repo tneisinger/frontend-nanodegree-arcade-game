@@ -1,5 +1,4 @@
 // Enemies our player must avoid
-//
 var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -7,10 +6,7 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = randomInt(100,300) * -1;
-    var row = randomInt(1,3);
-    this.y = (80*row) - 20;
-    this.speed = randomInt(150,300);
+    this.setStartPos();
     this.spriteWidth = 96;
     this.spriteHeight = 65;
     this.fromLeft = 2;
@@ -25,12 +21,12 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     this.x += this.speed*dt;
     if (this.x > 500 || this.x < -300) {
-        this.reset();
+        this.setStartPos();
     }
     updateEdgeVals(this);
 };
 
-Enemy.prototype.reset = function() {
+Enemy.prototype.setStartPos = function() {
     this.x = randomInt(100,300) * -1;
     var row = randomInt(1,3);
     this.y = (80*row) - 20;
@@ -53,6 +49,34 @@ var updateEdgeVals = function(object) {
     object.bottomEdge = object.y + object.fromTop + object.spriteHeight;
 }
 
+var Score = function() {
+    this.val = 0;
+    this.x = 490;
+    this.y = 100;
+    this.fillStyle = 'white';
+    this.strokeStyle = 'black';
+    this.textAlign = 'right';
+    this.font = '30px Comic Sans MS';
+}
+Score.prototype.update = function(dt) {
+    // nothing yet
+}
+Score.prototype.render = function() {
+    ctx.fillStyle = this.fillStyle;
+    ctx.font = this.font;
+    ctx.textAlign = this.textAlign;
+    ctx.fillText(this.val.toString(), this.x, this.y);
+}
+Score.prototype.addPoints = function(points) {
+    this.val += points;
+}
+Score.prototype.removePoints = function(points) {
+    this.val -= points;
+    if (this.val < 0) {
+        this.val = 0;
+    }
+}
+
 var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 200;
@@ -65,7 +89,7 @@ var Player = function() {
 };
 Player.prototype.update = function(dt) {
     if (this.y < 0) {
-        this.resetPosition();
+        this.win();
     }
     updateEdgeVals(this);
 }
@@ -87,16 +111,21 @@ Player.prototype.resetPosition = function() {
     this.x = 200;
     this.y = 380;
 }
-
+Player.prototype.win = function() {
+    this.resetPosition();
+    score.addPoints(100);
+}
+Player.prototype.lose = function() {
+    this.resetPosition();
+    score.removePoints(300);
+}
 var randomInt = function(low,hi) {
     return Math.floor((Math.random() * hi) + low);
 };
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-
+// Instantiate game objects.
 var player = new Player();
+var score = new Score();
 var allEnemies = [new Enemy(), new Enemy(), new Enemy()];
 
 // This listens for key presses and sends the keys to your
@@ -115,16 +144,18 @@ document.addEventListener('keyup', function(e) {
 var checkCollisions = function() {
     allEnemies.forEach(function(enemy) {
         if (collision(player, enemy)) {
-            player.resetPosition();
+            player.lose();
         }
     });
 }
 
-var collision = function(object1, object2) {
-    var leftOverlap = object2.leftEdge <= object1.leftEdge && object1.leftEdge <= object2.rightEdge;
-    var rightOverlap = object2.leftEdge <= object1.rightEdge && object1.rightEdge <= object2.rightEdge;
-    var topOverlap = object2.topEdge <= object1.topEdge && object1.topEdge <= object2.bottomEdge;
-    var bottomOverlap = object2.topEdge <= object1.bottomEdge && object1.bottomEdge <= object2.bottomEdge;
+// This is a predicate that takes two game objects as inputs.
+// It returns true if the two objects are currently touching.
+var collision = function(obj1, obj2) {
+    var leftOverlap = obj2.leftEdge <= obj1.leftEdge && obj1.leftEdge <= obj2.rightEdge;
+    var rightOverlap = obj2.leftEdge <= obj1.rightEdge && obj1.rightEdge <= obj2.rightEdge;
+    var topOverlap = obj2.topEdge <= obj1.topEdge && obj1.topEdge <= obj2.bottomEdge;
+    var bottomOverlap = obj2.topEdge <= obj1.bottomEdge && obj1.bottomEdge <= obj2.bottomEdge;
     if ((leftOverlap || rightOverlap) && (topOverlap || bottomOverlap)) {
         return true;
     }
