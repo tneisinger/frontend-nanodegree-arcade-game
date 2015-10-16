@@ -21,7 +21,7 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed*dt;
-    if (this.notOnScreen()) {
+    if (this.offScreen()) {
         this.setStartPos();
     }
     updateEdgeVals(this);
@@ -40,7 +40,7 @@ Enemy.prototype.setStartPos = function() {
     this.y = (80*row) - 20;
     this.speed = randomInt(150,300);
 }
-Enemy.prototype.notOnScreen = function() {
+Enemy.prototype.offScreen = function() {
     if (this.leftToRight) {
         return (this.x > 500 || this.x < -100) ? true : false;
     } else {
