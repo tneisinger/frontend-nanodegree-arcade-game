@@ -1,10 +1,11 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(row) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
+    this.y = (80*row) - 20;
     this.setStartPos();
     this.spriteWidth = 96;
     this.spriteHeight = 65;
@@ -38,8 +39,7 @@ Enemy.prototype.setStartPos = function() {
         this.sprite = 'images/enemy-bug-reversed.png';
         this.x = 500;
     }
-    var row = randomInt(1,3);
-    this.y = (80*row) - 20;
+    //var row = randomInt(1,3);
     this.speed = randomInt(150,300);
 }
 Enemy.prototype.offScreen = function() {
@@ -138,7 +138,7 @@ var randomInt = function(low,hi) {
 // Instantiate game objects.
 var player = new Player();
 var score = new Score();
-var allEnemies = [new Enemy(), new Enemy(), new Enemy()];
+var allEnemies = [new Enemy(1), new Enemy(2), new Enemy(3)];
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
