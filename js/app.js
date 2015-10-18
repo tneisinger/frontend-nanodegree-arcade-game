@@ -11,7 +11,6 @@ var Enemy = function() {
     this.spriteHeight = 65;
     this.fromLeft = 2;
     this.fromTop = 73;
-    this.setDirection();
     updateEdgeVals(this);
 };
 // Update the enemy's position, required method for game
@@ -26,38 +25,19 @@ Enemy.prototype.update = function(dt) {
     }
     updateEdgeVals(this);
 };
-Enemy.prototype.setDirection = function() {
-    this.leftToRight = Math.random() < 0.5 ? true : false;
-}
+
 Enemy.prototype.setStartPos = function() {
-    this.setDirection();
-    if (this.leftToRight) {
-        this.x = -100;
-    } else {
-        this.x = -600;
-    }
+    this.x = randomInt(100,300) * -1;
     var row = randomInt(1,3);
     this.y = (80*row) - 20;
     this.speed = randomInt(150,300);
 }
 Enemy.prototype.offScreen = function() {
-    if (this.leftToRight) {
-        return (this.x > 500 || this.x < -100) ? true : false;
-    } else {
-        return (this.x > 100 || this.x < -700) ? true : false;
-    }
+    return (this.x > 500 || this.x < -100) ? true : false;
 }
-
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    if (this.leftToRight) {
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    } else {
-        ctx.save();
-        ctx.scale(-1,1);
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-        ctx.restore();
-    }
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 // Now write your own player class
@@ -142,7 +122,7 @@ Player.prototype.lose = function() {
     score.removePoints(300);
 }
 var randomInt = function(low,hi) {
-    return Math.floor(Math.random() * (hi - low + 1)) + low;
+    return Math.floor((Math.random() * hi) + low);
 };
 
 // Instantiate game objects.
