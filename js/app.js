@@ -126,10 +126,13 @@ Player.prototype.resetPosition = function() {
 Player.prototype.win = function() {
     this.resetPosition();
     score.addPoints(100);
+    maybeCreateGem();
 }
 Player.prototype.lose = function() {
     this.resetPosition();
     score.removePoints(300);
+    gemLevel = 1;
+    gem = null;
 }
 var randomInt = function(low,hi) {
     return Math.floor((Math.random() * hi) + low);
@@ -139,6 +142,8 @@ var randomInt = function(low,hi) {
 var player = new Player();
 var score = new Score();
 var allEnemies = [new Enemy(1), new Enemy(2), new Enemy(3)];
+var gem = null;
+var gemLevel = 1;
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -158,12 +163,20 @@ var checkCollisions = function() {
         if (collision(player, enemy)) {
             player.lose();
         }
+    if (collision(player, gem)) {
+        score.addPoints(1000 * gemLevel)
+        gem = null;
+        gemLevel += (gemLevel < 3) ? 1 : 0;
+    }
     });
 }
 
 // This is a predicate that takes two game objects as inputs.
 // It returns true if the two objects are currently touching.
 var collision = function(obj1, obj2) {
+    if (obj1 === null || obj2 === null) {
+        return false;
+    }
     var leftOverlap = obj2.leftEdge <= obj1.leftEdge && obj1.leftEdge <= obj2.rightEdge;
     var rightOverlap = obj2.leftEdge <= obj1.rightEdge && obj1.rightEdge <= obj2.rightEdge;
     var topOverlap = obj2.topEdge <= obj1.topEdge && obj1.topEdge <= obj2.bottomEdge;
@@ -171,4 +184,42 @@ var collision = function(obj1, obj2) {
     if ((leftOverlap || rightOverlap) && (topOverlap || bottomOverlap)) {
         return true;
     }
+    return false;
 }
+
+var maybeCreateGem = function() {
+    var createGem = decision(0.5);
+    if (createGem && gem === null) {
+        gem = new Gem();
+        console.log('created gem!');
+    }
+}
+
+var decision = function(probability) {
+    return Math.random() < probability;
+}
+
+var Gem = function() {
+    var row = randomInt(1,3);
+    var column = randomInt(0,4);
+    this.x = (100*column);
+    this.y = (80*row) - 20;
+    this.spriteWidth = 96;
+    this.spriteHeight = 65;
+    this.fromLeft = 2;
+    this.fromTop = 73;
+    if (gemLevel === 1) {
+        this.sprite = 'images/gem-blue-small.png';
+    } else if (gemLevel === 2) {
+        this.sprite = 'images/gem-green-small.png';
+    } else if (gemLevel === 3) {
+        this.sprite = 'images/gem-orange-small.png';
+    }
+}
+
+Gem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+Gem.prototype.update = function() {
+    updateEdgeVals(this);
+};
