@@ -5,7 +5,6 @@ var Enemy = function() {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
     this.setStartPos();
     this.spriteWidth = 96;
     this.spriteHeight = 65;
@@ -19,7 +18,11 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x += this.speed*dt;
+    if (this.leftToRight) {
+        this.x += this.speed*dt;
+    } else {
+        this.x -= this.speed*dt;
+    }
     if (this.offScreen()) {
         this.setStartPos();
     }
@@ -27,7 +30,14 @@ Enemy.prototype.update = function(dt) {
 };
 
 Enemy.prototype.setStartPos = function() {
-    this.x = randomInt(100,300) * -1;
+    this.leftToRight = Math.random() < 0.5 ? true : false;
+    if (this.leftToRight) {
+        this.sprite = 'images/enemy-bug.png';
+        this.x = -100;
+    } else {
+        this.sprite = 'images/enemy-bug-reversed.png';
+        this.x = 500;
+    }
     var row = randomInt(1,3);
     this.y = (80*row) - 20;
     this.speed = randomInt(150,300);
