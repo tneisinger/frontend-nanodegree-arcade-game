@@ -30,7 +30,7 @@ var Player = function() {
     // Update the edge attributes of the player.  The edge attributes are used
     // for collision detection in the collisions() function.
     updateEdgeVals(this);
-}
+};
 
 Player.prototype.update = function(dt) {
     // If the player reaches the water, she wins
@@ -41,13 +41,13 @@ Player.prototype.update = function(dt) {
     // Update the edge attributes of the player.  The edge attributes are used
     // for collision detection in the collisions() function.
     updateEdgeVals(this);
-}
+};
 
 // Move the player to the starting position
 Player.prototype.toStartPos = function() {
     this.x = 200;
     this.y = 380;
-}
+};
 
 Player.prototype.win = function() {
     this.toStartPos();
@@ -57,7 +57,7 @@ Player.prototype.win = function() {
     if (gem === null && decision(GEM_PROBABILITY)) {
         gem = new Gem();
     }
-}
+};
 
 Player.prototype.lose = function() {
     this.toStartPos();
@@ -68,11 +68,11 @@ Player.prototype.lose = function() {
 
     // Remove any gems that might be on the board
     gem = null;
-}
+};
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 Player.prototype.handleInput = function(key) {
     if (key === 'left' && this.x > 0) {
@@ -84,7 +84,7 @@ Player.prototype.handleInput = function(key) {
     } else if (key === 'down' && this.y < 380) {
         this.y += 80;
     }
-}
+};
 
 
 // Enemies the player must avoid
@@ -110,7 +110,7 @@ var Enemy = function(row) {
     // set the leftEdge, rightEdge, topEdge, and bottomEdge
     // attributes, which are used for collision detection.
     updateEdgeVals(this);
-}
+};
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -131,7 +131,7 @@ Enemy.prototype.update = function(dt) {
 
     // Update the edge attributes for collision detection
     updateEdgeVals(this);
-}
+};
 
 // Set the direction in which the enemy will travel, which sprite image to use
 // (normal or reversed), and how fast the enemy will travel.
@@ -150,18 +150,18 @@ Enemy.prototype.reset = function() {
 
     // Assign a random speed value
     this.speed = randomInt(ENEMY_LOW_SPEED, ENEMY_TOP_SPEED);
-}
+};
 
 // This is a predicate which returns true if the given enemy
 // is currently off screen
 Enemy.prototype.offScreen = function() {
     return (this.x > 500 || this.x < -100) ? true : false;
-}
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 
 // A Gem which randomly appears on the board.
@@ -189,15 +189,15 @@ var Gem = function() {
     } else if (gemLevel === 3) {
         this.sprite = 'images/gem-orange-small.png';
     }
-}
+};
 
 Gem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 Gem.prototype.update = function() {
     updateEdgeVals(this);
-}
+};
 
 
 // The player's score in the game
@@ -212,7 +212,7 @@ var Score = function() {
     this.strokeStyle = 'black';
     this.textAlign = 'right';
     this.font = '30px Comic Sans MS';
-}
+};
 
 // Render the score onto the screen
 Score.prototype.render = function() {
@@ -221,12 +221,12 @@ Score.prototype.render = function() {
     ctx.font = this.font;
     ctx.textAlign = this.textAlign;
     ctx.fillText(this.value.toString(), this.x, this.y);
-}
+};
 
 // Add points to the player's score
 Score.prototype.addPoints = function(points) {
     this.value += points;
-}
+};
 
 // Remove points from the player's score
 // If the score ever falls below zero, set it equal to zero.
@@ -235,7 +235,7 @@ Score.prototype.removePoints = function(points) {
     if (this.value < 0) {
         this.value = 0;
     }
-}
+};
 
 
 // * General Functions * //
@@ -251,11 +251,11 @@ var checkCollisions = function() {
 
     // Check for collisions between the player and the gem
     if (gem && collision(player, gem)) {
-        score.addPoints(GEM_VALUE * gemLevel)
+        score.addPoints(GEM_VALUE * gemLevel);
         gem = null;
         gemLevel += (gemLevel < 3) ? 1 : 0;
     }
-}
+};
 
 // This is a predicate that takes two game objects as inputs.
 // It returns true if the two objects are currently touching.
@@ -276,12 +276,12 @@ var collision = function(obj1, obj2) {
         return true;
     }
     return false;
-}
+};
 
 // return true or false, based on the given probability
 var decision = function(probability) {
     return Math.random() < probability;
-}
+};
 
 // Given an Enemy, Player, or Gem object, update the objects edge attributes.
 // The edge attributes are used for collision detection in the collision()
@@ -291,12 +291,12 @@ var updateEdgeVals = function(object) {
     object.rightEdge = object.x + object.fromLeft + object.collisionWidth;
     object.topEdge = object.y + object.fromTop;
     object.bottomEdge = object.y + object.fromTop + object.collisionHeight;
-}
+};
 
 // Return a random integer between the two given values, inclusive.
 var randomInt = function(low,hi) {
     return Math.floor((Math.random() * hi) + low);
-}
+};
 
 
 // * Instantiation of Game Objects * //

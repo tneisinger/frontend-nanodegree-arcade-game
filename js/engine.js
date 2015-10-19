@@ -96,7 +96,7 @@ var Engine = (function(global) {
         });
         player.update();
         if (gem) {
-            gem.update()
+            gem.update();
         }
     }
 
