@@ -95,7 +95,6 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
-        score.update();
         if (gem) {
             gem.update()
         }
@@ -139,7 +138,6 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
 
         renderEntities();
     }
