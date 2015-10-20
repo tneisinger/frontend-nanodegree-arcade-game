@@ -1,3 +1,5 @@
+'use strict';
+
 // * Constants * //
 
 // The minimum and maximum speeds of the enemies
@@ -91,7 +93,7 @@ Player.prototype.handleInput = function(key) {
 // Parameter: row, the row which the enemy will occupy
 var Enemy = function(row) {
     // set the y value based on the row number given
-    this.y = (80*row) - 20;
+    this.y = (80 * row) - 20;
 
     // Set the direction in which the enemy will
     // travel, which sprite image to use (normal or reversed),
@@ -304,7 +306,10 @@ var randomInt = function(low,hi) {
 var player = new Player();
 
 // create three enemies, one for each row.
-var allEnemies = [new Enemy(1), new Enemy(2), new Enemy(3)];
+var allEnemies = [];
+for (var i = 1; i <= 3; i++) {
+    allEnemies.push(new Enemy(i));
+}
 
 // Instantiate the gem variable, but do not create a gem at the start of the
 // game.
