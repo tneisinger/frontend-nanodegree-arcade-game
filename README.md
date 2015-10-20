@@ -9,12 +9,12 @@ part of Udacity's Front End Nanodegree program.
 ## Setup
 
 To setup the game, simply clone this repository onto your system and open the
-included index.html file with your web browser of choice.
+included index.html file with your preferred web browser.
 
 ## How To Play
 
-The goal of the game is to maximize the score.  There are two ways to add
-points to the score:
+Use the arrow keys to control the hero character.  The goal of the game is to
+maximize the score.  There are two ways to add points to the score:
 
 - Reach the water without being hit by an enemy (100 points)
 - Collect a gem (500 - 1500 points, depending on the gem color)
